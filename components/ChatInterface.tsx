@@ -24,8 +24,8 @@ export default function ChatInterface() {
       const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
       if (jsonMatch) {
         try {
-          const JSON5 = require('json5');
-          const data = JSON5.parse(jsonMatch[1]);
+          const rawJson = jsonMatch[1].replace(/,(?!\s*?[{["'\w])/g, ''); // strip trailing commas
+          const data = JSON.parse(rawJson);
           dispatch(updateCVData(data));
         } catch (e) {
           console.error("Failed to parse JSON", e);
@@ -91,8 +91,8 @@ export default function ChatInterface() {
         const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
         if (jsonMatch) {
           try {
-            const JSON5 = require('json5');
-            const data = JSON5.parse(jsonMatch[1]);
+            const rawJson = jsonMatch[1].replace(/,(?!\s*?[{["'\w])/g, '');
+            const data = JSON.parse(rawJson);
             dispatch(updateCVData(data));
           } catch (e) {
             console.error("Failed to parse JSON in useEffect", e);
