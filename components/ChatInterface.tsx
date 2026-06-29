@@ -103,19 +103,35 @@ export default function ChatInterface() {
   }, [messages, chat.isLoading, dispatch]);
 
   return (
-    <div className="flex flex-col h-[70vh] max-h-[700px] min-h-[500px] border border-white/20 dark:border-gray-800/50 rounded-2xl overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative transition-all">
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
-        {messages.length === 0 && (
-          <div className="text-center text-gray-500 dark:text-gray-400 mt-28 animate-in fade-in zoom-in duration-700">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-tr from-indigo-500 to-emerald-400 p-[2px] shadow-2xl">
-              <div className="w-full h-full bg-white dark:bg-gray-900 rounded-[22px] flex items-center justify-center">
-                <span className="text-3xl">✨</span>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2 tracking-tight">AI Career Architect</p>
-            <p className="max-w-xs mx-auto text-sm leading-relaxed">I'll help you extract the best parts of your experience to build a standout CV. Just chat with me.</p>
+    <div className="w-full flex flex-col gap-6 transition-all duration-700">
+      {/* DYNAMIC HEADER: Hides when chatting starts for "Focus Mode" */}
+      {messages.length === 0 && (
+        <header className="mb-6 mt-12 text-center space-y-6 animate-in fade-in zoom-in duration-700">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-bold tracking-[0.2em] uppercase border border-indigo-500/20 shadow-sm backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" /> Local Privacy First
           </div>
-        )}
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-balance">
+            Conversational <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-blue-500 to-emerald-400 drop-shadow-sm">CV Builder</span>
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-lg leading-relaxed">
+            Chat with our AI Architect to pivot your career. All data is processed securely right in your browser.
+          </p>
+        </header>
+      )}
+
+      {/* CHAT BOX: Grows to fill screen when chatting */}
+      <div className={`flex flex-col border border-white/20 dark:border-gray-800/50 rounded-2xl overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative transition-all duration-700 ease-in-out ${messages.length === 0 ? 'h-[500px]' : 'h-[85vh] max-h-[900px] min-h-[600px]'}`}>
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
+          {messages.length === 0 && (
+            <div className="text-center text-gray-400 dark:text-gray-500 mt-28 animate-in fade-in duration-700">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-3xl bg-white dark:bg-gray-800/50 p-[2px] shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="w-full h-full rounded-[22px] flex items-center justify-center">
+                  <span className="text-2xl">✨</span>
+                </div>
+              </div>
+              <p className="text-sm font-medium">Say hi to start building your CV</p>
+            </div>
+          )}
         
         {messages.map((m: any, idx: number) => {
           const content = m.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || m.text || m.content || '';
@@ -166,6 +182,7 @@ export default function ChatInterface() {
           <Send size={20} className="ml-0.5" />
         </button>
       </form>
+    </div>
     </div>
   );
 }
