@@ -162,6 +162,21 @@ export default function ChatInterface() {
             </div>
           </div>
         )}
+
+        {chat.error && (
+          <div className="flex justify-center mt-4 mb-2">
+            <div className="bg-red-500/10 dark:bg-red-500/20 border border-red-500/20 text-red-600 dark:text-red-400 px-5 py-3 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in duration-300">
+              <span className="text-sm font-medium">Koneksi ke AI gagal. Tenang, chat lo nggak ilang kok!</span>
+              <button
+                onClick={() => chat.reload()}
+                className="bg-red-500 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-red-600 transition-colors shadow-sm active:scale-95 flex items-center gap-2"
+              >
+                🔄 Coba Kirim Ulang
+              </button>
+            </div>
+          </div>
+        )}
+
         <div ref={bottomRef} className="h-4" />
       </div>
 
