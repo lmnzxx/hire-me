@@ -15,6 +15,7 @@ export default function ChatInterface() {
   
   // Manage our own input state!
   const [input, setInput] = useState('');
+  const [isTimeout, setIsTimeout] = useState(false);
   
   const chat: any = useChat({
     onFinish: (message: any) => {
@@ -56,6 +57,21 @@ export default function ChatInterface() {
     
     setInput('');
   };
+
+  // Timeout Tracker: If AI takes longer than 45 seconds, we stop it manually and show a retry.
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (chat.isLoading) {
+      setIsTimeout(false);
+      timer = setTimeout(() => {
+        setIsTimeout(true);
+        if (chat.stop) chat.stop();
+      }, 45000); // 45 seconds limit
+    } else {
+      setIsTimeout(false);
+    }
+    return () => clearTimeout(timer);
+  }, [chat.isLoading, chat.stop]);
 
   useEffect(() => {
     // block: 'nearest' prevents the entire browser window from jumping down
@@ -163,7 +179,7 @@ export default function ChatInterface() {
           </div>
         )}
 
-        {chat.error && (
+        {chat.error && !isTimeout && (
           <div className="flex justify-center mt-4 mb-2">
             <div className="bg-red-500/10 dark:bg-red-500/20 border border-red-500/20 text-red-600 dark:text-red-400 px-5 py-3 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in duration-300">
               <span className="text-sm font-medium">Koneksi ke AI gagal. Tenang, chat lo nggak ilang kok!</span>
@@ -172,6 +188,23 @@ export default function ChatInterface() {
                 className="bg-red-500 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-red-600 transition-colors shadow-sm active:scale-95 flex items-center gap-2"
               >
                 🔄 Coba Kirim Ulang
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isTimeout && (
+          <div className="flex justify-center mt-4 mb-2">
+            <div className="bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/20 text-orange-600 dark:text-orange-400 px-5 py-3 rounded-2xl flex flex-col items-center gap-3 animate-in fade-in zoom-in duration-300">
+              <span className="text-sm font-medium">Wah, servernya lelet banget (Timeout). Sabar bentar ya.</span>
+              <button
+                onClick={() => {
+                  setIsTimeout(false);
+                  chat.reload();
+                }}
+                className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-orange-600 transition-colors shadow-sm active:scale-95 flex items-center gap-2"
+              >
+                🔄 Pancing Ulang
               </button>
             </div>
           </div>

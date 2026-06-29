@@ -44,6 +44,8 @@ The JSON format MUST be exactly:
 }
 `;
 
+export const maxDuration = 60; // Maximize Vercel timeout for LLM
+
 export async function POST(req: Request) {
   try {
     // 1. ORIGIN PROTECTION (Anti-Hijack)
