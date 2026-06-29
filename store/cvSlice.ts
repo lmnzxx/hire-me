@@ -66,6 +66,9 @@ const cvSlice = createSlice({
     },
     saveCurrentVersion(state) {
       if (state.isComplete) {
+        if (!state.versions) {
+          state.versions = [];
+        }
         state.versions.push({
           id: Date.now().toString(),
           date: new Date().toLocaleString(),
@@ -78,6 +81,7 @@ const cvSlice = createSlice({
       }
     },
     loadVersion(state, action: PayloadAction<string>) {
+      if (!state.versions) return;
       const version = state.versions.find(v => v.id === action.payload);
       if (version) {
         state.targetRole = version.targetRole;
