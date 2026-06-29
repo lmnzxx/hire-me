@@ -58,7 +58,8 @@ export default function ChatInterface() {
   };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // block: 'nearest' prevents the entire browser window from jumping down
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [chat.messages]);
 
   const messages = chat.messages || [];
@@ -102,7 +103,7 @@ export default function ChatInterface() {
   }, [messages, chat.isLoading, dispatch]);
 
   return (
-    <div className="flex flex-col h-[650px] border border-white/20 dark:border-gray-800/50 rounded-2xl overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative transition-all">
+    <div className="flex flex-col h-[70vh] max-h-[700px] min-h-[500px] border border-white/20 dark:border-gray-800/50 rounded-2xl overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] relative transition-all">
       <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
         {messages.length === 0 && (
           <div className="text-center text-gray-500 dark:text-gray-400 mt-28 animate-in fade-in zoom-in duration-700">
