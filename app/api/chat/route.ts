@@ -1,8 +1,8 @@
 import { streamText } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
-// Allow responses up to 30 seconds
-export const maxDuration = 30;
+// Allow responses up to 60 seconds (Maximize Vercel timeout for LLM)
+export const maxDuration = 60;
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || 'dummy_key',
@@ -43,8 +43,6 @@ The JSON format MUST be exactly:
   }
 }
 `;
-
-export const maxDuration = 60; // Maximize Vercel timeout for LLM
 
 export async function POST(req: Request) {
   try {
