@@ -44,11 +44,29 @@ The JSON format MUST be exactly:
 
 export async function POST(req: Request) {
   try {
+    // 1. ORIGIN PROTECTION (Anti-Hijack)
+    const origin = req.headers.get('origin');
+    const host = req.headers.get('host');
+    // If origin is sent (browser fetch), ensure it matches the server's host to prevent unauthorized cross-origin use
+    if (process.env.NODE_ENV === 'production' && origin && host) {
+      const originUrl = new URL(origin);
+      if (originUrl.host !== host) {
+        return new Response(JSON.stringify({ error: "Forbidden: Unauthorized Origin" }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      }
+    }
+
     if (!process.env.OPENROUTER_API_KEY) {
       throw new Error("OPENROUTER_API_KEY is not set in .env.local. Please add it and restart the server (npm run dev).");
     }
 
     const { messages } = await req.json();
+
+    // 2. PAYLOAD SIZE LIMIT (Anti-Spam / Anti-OOM)
+    const latestMessage = messages[messages.length - 1];
+    const messageContent = latestMessage?.content || (latestMessage?.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || '');
+    if (messageContent.length > 2000) {
+      return new Response(JSON.stringify({ error: "Payload Too Large: Tolong ringkas pesan lo di bawah 2000 karakter ya bro!" }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+    }
 
     const coreMessages = messages.map((msg: any) => ({
       role: msg.role,

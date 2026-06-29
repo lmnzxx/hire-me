@@ -32,8 +32,15 @@ export default function ChatInterface() {
         }
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("useChat Error:", error);
+      if (error.message?.includes('Too Large')) {
+        alert("Pesan lo kepanjangan bro! Tolong diringkas di bawah 2000 karakter ya.");
+      } else if (error.message?.includes('Forbidden')) {
+        alert("Akses diblokir (Origin Protection).");
+      } else {
+        alert("Waduh, koneksi ke AI lagi gangguan nih. Coba lagi bentar ya.");
+      }
     }
   });
 
