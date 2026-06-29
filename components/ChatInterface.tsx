@@ -16,8 +16,7 @@ export default function ChatInterface() {
   // Manage our own input state!
   const [input, setInput] = useState('');
   
-  // @ts-ignore
-  const chat = useChat({
+  const chat: any = useChat({
     onFinish: (message: any) => {
       console.log('ONFINISH MESSAGE:', message);
       const content = message?.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || message?.text || message?.content || (typeof message === 'string' ? message : '');
